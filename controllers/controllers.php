@@ -75,7 +75,7 @@ function getVehicles() {
 		");
 
 	if ($vehicles_found != null) {
-		$vehicles_found = array('vehicles'=>$vehicles_found);
+		$vehicles_found = array($vehicles_found);
 	}
 	else
 	{

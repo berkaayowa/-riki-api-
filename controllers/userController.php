@@ -80,10 +80,10 @@ function signUp($customer, $contacts) {
 	return "Oops!looks like something went wrong";
 }
 
-function updateUser($customer, $contacts){
+function updateUser($customer, $customer_contacts){
 	global $db;
      
-
+    
 
 	$check_costomer_existance = "SELECT * FROM customers WHERE 
 	customer_id = {$customer['customer_id']}";
@@ -91,27 +91,95 @@ function updateUser($customer, $contacts){
   
     //die($db->fetch($check_costomer_existance));
 	if($db->fetch($check_costomer_existance) == null){
-		return "This is customer is not registered!";
+		return "This customer is not registered!";
 	}
 	else{
-		$update_customer_query = "UPDATE customers
-		SET customer_name='{$customer['customer_name']}',customer_surname='{$customer['customer_surname']}',
-		customer_gender='{$customer['customer_gender']}',customer_dob='{$customer['customer_dob']}'
-		WHERE customer_id={$customer['customer_id']}";
+
+			$customer_name =  "";
+			$customer_surname = "";
+			$customer_gender = "";
+			$customer_dob = "";
+
+			$get_customer = "SELECT* FROM customers WHERE customer_id = '{$customer['customer_id']}'";
+			$run_query = $db->fetch($get_customer);
+			
+			foreach ($run_query as $row) {
+				$customer_name =  $row['customer_name'];
+				$customer_surname = $row['customer_surname'];
+				$customer_gender = $row['customer_gender'];
+				$customer_dob = $row['customer_dob'];
+		 	}
+
+		 	
+
+		 	$get_customer_contacts = "SELECT* FROM customer_contacts WHERE customer_id = '{$customer['customer_id']}'";
+			$run_query = $db->fetch($get_customer_contacts);
+
 		
 
-		if($db->update($update_customer_query)){
 			
-			$update_customer_contacts_query = "UPDATE customer_contacts
-			SET customer_email = '{$contacts['customer_email']}',customer_password='{$contacts['customer_password']}',
-			city_id={$contacts['city_id']},customer_phone='{$contacts['customer_phone']}'
-			WHERE customer_id={$customer['customer_id']}";
-			 echo $update_customer_contacts_query;
+			$customer_password = "";
 
-			if($db->update($update_customer_contacts_query)){
-					return "user details updated successfully registered!";
-			}
-		}
+			foreach ($run_query as $row) {
+				$customer_email =  $row['customer_email'];
+				$customer_password = $row['customer_password'];
+				echo $customer_password;
+		 	}
+
+
+		 	
+
+		 	
+
+		 	if($customer['customer_name'] != $customer_name){
+		 		$update_customer_query = "UPDATE customers
+		        SET customer_name='{$customer['customer_name']}'";
+		 		if($db->update($update_customer_query)){
+					return "customer name updated successfully!";
+				}
+		 	}
+
+		 	if($customer['customer_surname'] != $customer_surname){
+		 		$update_customer_surname_query = "UPDATE customers
+		        SET customer_surname='{$customer['customer_surname']}'";
+		 		if($db->update($update_customer_surname_query)){
+					return "customer customer_surname updated successfully!";
+				}
+		 	}
+
+
+		 	if($customer['customer_gender'] != $customer_gender){
+		 		$update_customer_gender_query = "UPDATE customers
+		        SET customer_gender='{$customer['customer_gender']}'";
+		 		if($db->update($update_customer_gender_query)){
+					return "customer customer_gender updated successfully!";
+				}
+		 	}
+
+		 	if($customer['customer_dob'] != $customer_dob){
+		 		$update_customer_dob_query = "UPDATE customers
+		        SET customer_dob='{$customer['customer_dob']}'";
+		 		if($db->update($update_customer_dob_query)){
+					return "customer customer_dob updated successfully!";
+				}
+		 	}
+
+		 	if($customer_contacts['customer_password'] != ""){
+		 		if($customer_contacts['customer_password'] != $customer_password){
+
+		 			echo $customer_password;
+					return "Invalid password";
+				}
+				else{
+					echo $customer_contacts['customer_new_password'];
+					$update_customer_contacts_query = "UPDATE customer_contacts
+		 			SET customer_password='{$customer_contacts['customer_new_password']}'
+					WHERE customer_id={$customer['customer_id']}";
+					if($db->update($update_customer_contacts_query)){
+						return "customer password updated successfully";
+					}
+				}
+		 	}
 	}
 }
 
@@ -125,9 +193,23 @@ function recoverPassword($customer_email){
 		return "This is customer is not registered!";
 	}
 	else{
+		$email = "";
+		$password = "";
 		foreach ($run_query as $row) {
-		 	return $row['customer_email'];
+		 	$email = $row['customer_email'];
+		 	$password = $row['customer_password'];
 		 }
+		 if($email != null){
+		 	$msg = 'Hi </br> your loggin details are : </br></br>Email : '.$email.'</br></br> Password : '.$password;
+		 	$flag =  Quote_email::send('Your Passoword','Rikitours App Passoword Retrival','Your password', $msg,$email);
+		 	if($flag){
+		 		return "We've sent you an email with your password";
+		 	}
+		 	else{
+		 		return "Invalid email address";
+		 	}
+		 }
+		
 	}
 }
 

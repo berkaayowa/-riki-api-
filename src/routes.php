@@ -100,10 +100,76 @@ $app->post('/makereservation/', function ($request, $response, $args) {
 		"vehecle_id"=>$params['vehecle_id'],
 		"reservation_pickupdate"=>$params['reservation_pickupdate'],
 		"reservation_returndate"=>$params['reservation_returndate'],
-		"reservation_amout_to_pay"=>$params['reservation_amout_to_pay']
+		"reservation_amount_to_pay"=>$params['reservation_amount_to_pay'],
+		"rental_status"=>$params['rental_status']
+		
 	];
     return makeReservation($reservation);
 ;
 });
 
+$app->post('/updateuser/', function ($request, $response, $args) {
+	//$user_id = $request->getAttribute('id');
 
+	
+	$params = $request->getParams();
+    $cusomer = [
+        "customer_id"=>$params['customer_id'],
+		"customer_name"=>$params['customer_name'],
+		"customer_surname"=>$params['customer_surname'],
+		"customer_gender"=>$params["customer_gender"],
+		"customer_dob"=>$params['customer_dob']
+	];
+
+	$customer_contacts = [
+		"customer_email"=>$params['customer_email'],
+		"customer_password"=>$params['customer_password'],
+		"customer_new_password"=>$params['customer_new_password']
+	];
+	
+	return updateUser($cusomer,$customer_contacts);
+});
+
+$app->post('/recoverpassword/', function ($request, $response, $args){
+	$params = $request->getParams();
+	$customer_email = $params['customer_email'];
+	return recoverPassword($customer_email);
+
+});
+
+$app->post('/sendquote/', function ($request, $response, $args) {
+	//$user_id = $request->getAttribute('id');
+
+	
+	$params = $request->getParams();
+    $quote = [
+        "customer_id"=>$params['customer_id'],
+		"attraction_id"=>$params['attraction_id'],
+		"customer_msg"=>$params['customer_msg']		
+	];
+
+	return sendQuote($quote);
+
+});
+
+$app->post('/sendroomquote/', function ($request, $response, $args) {
+	//$user_id = $request->getAttribute('id');
+
+	
+	$params = $request->getParams();
+    $quote = [
+        "customer_id"=>$params['customer_id'],
+		"room_id"=>$params['room_id'],
+		"customer_msg"=>$params['customer_msg']		
+	];
+
+	return sendRoomQuote($quote);
+
+});
+
+
+$app->get('/riki-admin', function ($request, $response, $args) {
+
+	return "<h2 align='center'> Contents are still uploading... , please try again later Riki-admin Panel </h2>";
+
+});

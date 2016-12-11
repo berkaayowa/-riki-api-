@@ -11,7 +11,6 @@
 
 		if($db->update($reservation_query)){
 
-			 echo "fghjhghj";
 			 $rental_status = $reservation['rental_status'];
 			 $get_reservation_id = "SELECT* FROM reservations WHERE customer_id = '{$reservation['customer_id']}' AND
 			vehecle_id = '{$reservation['vehecle_id']}' AND  reservation_pickupdate ='{$reservation['reservation_pickupdate']}'";
@@ -24,9 +23,10 @@
 			$reservation_id = $row['reservation_id'];
 		 	}
 
-		 	echo $reservation_id;
+		 	//echo $reservation_id;
 
-			makeRental($rental_status,$reservation_id);
+			//makeRental($rental_status,$reservation_id);
+			return "You successfully made a reservation";
 		}
 	}
 
